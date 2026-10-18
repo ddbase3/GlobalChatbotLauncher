@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>GlobalChatbotLauncher WordPress admin bar integration smoke test</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../src/styles/globalchatbotlauncher.css">
+	<style>
+		#wpadminbar { position: fixed; z-index: 99999; top: 0; left: 0; width: 100%; min-width: 600px; height: 32px; background: #1d2327; }
+		body { margin: 0; }
+	</style>
+</head>
+<body>
+	<div id="wpadminbar">WordPress administration bar</div>
+	<div data-base3-global-chatbot-launcher hidden
+		data-ajax-url="./fake-chatbot"
+		data-dock-target="body"
+		data-dock-header-target="#wpadminbar"
+		data-mode-overlay-enabled="0"
+		data-mode-modal-enabled="0"
+		data-mode-docked-enabled="1"
+		data-mode-cover-enabled="0"
+		data-mode-fullscreen-enabled="0"
+		data-button-label="Open chatbot"
+		data-close-label="Close chatbot"></div>
+	<output id="result">Not tested</output>
+	<script>
+		window.fetch = async () => new Response('<div>Chatbot test</div>', { status: 200, headers: { 'Content-Type': 'text/html' } });
+	</script>
+	<script type="module" src="../src/index.js"></script>
+	<script>
+		window.addEventListener('load', () => setTimeout(() => {
+			const button = document.getElementById('base3-chatbot-fab');
+			const bar = document.getElementById('wpadminbar');
+			const result = document.getElementById('result');
+			if (!button) { result.textContent = 'FAIL: launcher was not mounted'; return; }
+			const originalWidth = bar.style.width;
+			const originalRight = bar.style.right;
+			button.click();
+			setTimeout(() => {
+				const panel = document.getElementById('base3-chatbot-panel');
+				const topRight = document.elementFromPoint(window.innerWidth - 12, 12);
+				const overBar = topRight === panel || panel.contains(topRight);
+				const resizedBar = bar.style.width === 'auto' && parseInt(bar.style.right, 10) > 0;
+				panel.querySelector('#base3-chatbot-panel-actions button:last-child').click();
+				const restored = bar.style.width === originalWidth && bar.style.right === originalRight;
+				const passed = overBar && (window.innerWidth < 992 || resizedBar) && restored;
+				result.textContent = passed ? 'PASS: sidebar above bar, bar shifted, original styles restored' :
+					'FAIL: overBar=' + overBar + ', resizedBar=' + resizedBar + ', restored=' + restored;
+			}, 100);
+		}, 100));
+	</script>
+</body>
+</html>

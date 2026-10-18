@@ -22,3 +22,14 @@ and keyboard arrow keys. Hold Shift for larger keyboard increments.
 The host may supply formatted branding through `data-header-title`. Only
 `strong`, `b`, `em`, `i` and `br` are inserted into the live title element;
 all attributes are removed, and scripts/styles are discarded.
+
+## Docked host headers
+
+A host may supply `data-dock-header-target` for a fixed header that must end
+at the sidebar edge. `GlobalChatbotLauncher` adjusts that header's inline width
+and right offset on desktop when the sidebar opens or resizes, and restores
+the previous inline values when the sidebar closes. WordPress supplies
+`#wpadminbar` through this existing host option. The sidebar's stacking level
+is higher than the standard WordPress administration bar, so the panel stays
+visible even if the host header does not resize (for example on narrow screens).
+The shared CSS does not hide or alter host toolbars globally.
