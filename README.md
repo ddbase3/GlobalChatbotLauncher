@@ -33,3 +33,12 @@ the previous inline values when the sidebar closes. WordPress supplies
 is higher than the standard WordPress administration bar, so the panel stays
 visible even if the host header does not resize (for example on narrow screens).
 The shared CSS does not hide or alter host toolbars globally.
+
+## Body scrollport docking
+
+For hosts using `data-dock-target="body"`, docked mode transfers vertical
+scrolling from the viewport to the reduced-width page body, placing the page
+scrollbar at the sidebar boundary. The original document scroll position and
+inline layout styles are restored on close or mode change. Host-specific
+footer layout rules remain with the host. Other dock targets retain their
+existing resizing behavior.
